@@ -33,16 +33,22 @@
       margin: 5px 0;
       display: block;
     }
-    input[type='submit'] {
-      background-color: #007BFF;
-      color: white;
-      border: none;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      text-align: left;
+      padding: 8px;
     }
   </style>
 </head>
 <body>
   <div class='container'>
     <h1>Flour Mixer</h1>
+    <p>This app helps you mix different types of flour to achieve your desired flour type. Just enter your target flour type and the total amount needed, and the app will do the calculations for you.</p>
     <img src='https://via.placeholder.com/600x400' alt='Flour Mixer'>
     <form id='flourForm'>
       <label for='targetType'>Target Flour Type:</label>
@@ -56,9 +62,17 @@
     function calculate() {
       const targetType = parseFloat(document.getElementById('targetType').value) || 0;
       const totalAmount = parseFloat(document.getElementById('totalAmount').value) || 0;
-      const type405Amount = (405 / targetType) * totalAmount;
-      const type1080Amount = (1080 / targetType) * totalAmount;
-      document.getElementById('result').innerHTML = `You will need ${type405Amount.toFixed(2)}g of Type 405 and ${type1080Amount.toFixed(2)}g of Type 1080 to make ${totalAmount}g of your target flour type ${targetType}.`;
+      const relation = 0;
+      if (targetType >= 405 && targetType <= 1080) {
+        relation= 1 - ((targetType - 405) / (1080 - 405));
+      } else {
+        relation= NaN;
+      }
+
+      const type405Amount = relation * totalAmount;
+      const type1080Amount = (1-relation) * totalAmount;
+      const table = `<table><tr><th>Type</th><th>Amount (g)</th></tr><tr><td>Type 405</td><td>${type405Amount.toFixed(2)}</td></tr><tr><td>Type 1080</td><td>${type1080Amount.toFixed(2)}</td></tr></table>`;
+      document.getElementById('result').innerHTML = table;
     }
   </script>
   <script>
